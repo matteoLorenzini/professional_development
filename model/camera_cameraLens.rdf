@@ -1,0 +1,114 @@
+@prefix : <http://example.com/camera-ontology#> .
+@prefix camera: <http://example.com/camera#> .
+@prefix brand: <http://example.com/brand#> .
+@prefix mounting: <http://example.com/mounting#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Classes
+camera:Camera rdf:type owl:Class .
+camera:DigitalCamera rdf:type owl:Class ;
+    rdfs:subClassOf camera:Camera .
+camera:FilmCamera rdf:type owl:Class ;
+    rdfs:subClassOf camera:Camera .
+camera:CameraLens rdf:type owl:Class .
+brand:Brand rdf:type owl:Class .
+mounting:MountingType rdf:type owl:Class .
+
+# Object Properties
+:hasBrand rdf:type owl:ObjectProperty ;
+    rdfs:domain [ rdf:type owl:Class ;
+                  owl:unionOf ( camera:DigitalCamera
+                                camera:FilmCamera
+                                camera:CameraLens
+                              )
+                ] ;
+    rdfs:range brand:Brand ;
+    owl:inverseOf :brandOf .
+
+:hasMountingType rdf:type owl:ObjectProperty ;
+    rdfs:domain [ rdf:type owl:Class ;
+                  owl:unionOf ( camera:DigitalCamera
+                                camera:CameraLens
+                              )
+                ] ;
+    rdfs:range mounting:MountingType ;
+    owl:inverseOf :mountingTypeOf .
+
+:isCompatibleWith rdf:type owl:ObjectProperty ;
+    rdfs:domain camera:CameraLens ;
+    rdfs:range camera:Camera ;
+    owl:inverseOf :compatibleLens .
+
+# Restrictions
+camera:DigitalCamera owl:disjointWith camera:FilmCamera .
+
+camera:CameraLens owl:disjointUnionOf ( [
+    rdf:type owl:Class ;
+    owl:complementOf [
+        rdf:type owl:Restriction ;
+        owl:onProperty :hasBrand ;
+        owl:someValuesFrom brand:Brand
+    ]
+  ]
+  [
+    rdf:type owl:Class ;
+    owl:onProperty :hasBrand ;
+    owl:minQualifiedCardinality "1" ;
+    owl:onClass brand:Brand
+  ]
+) .
+
+# Individual Examples
+camera:Canon_EOS_R6 rdf:type camera:DigitalCamera ;
+    :hasBrand brand:Canon ;
+    :hasMountingType mounting:RF_Mount .
+
+camera:Nikon_D850 rdf:type camera:DigitalCamera ;
+    :hasBrand brand:Nikon ;
+    :hasMountingType mounting:F_Mount .
+
+camera:Leica_M10_P rdf:type camera:DigitalCamera ;
+    :hasBrand brand:Leica ;
+    :hasMountingType mounting:Leica_M_Mount .
+
+camera:Nikkor_Z_50mm rdf:type camera:CameraLens ;
+    :hasBrand brand:Nikon ;
+    :hasMountingType mounting:Z_Mount ;
+    :isCompatibleWith camera:Nikon_Z7 .
+
+camera:Canon_EF_50mm rdf:type camera:CameraLens ;
+    :hasBrand brand:Canon ;
+    :hasMountingType mounting:EF_Mount ;
+    :isCompatibleWith camera:Canon_EOS_5D .
+
+camera:Zeiss_Batis_18mm rdf:type camera:CameraLens ;
+    :hasBrand brand:Zeiss ;
+    :hasMountingType mounting:E_Mount ;
+    :isCompatibleWith camera:Sony_Alpha_A7III .
+
+brand:Canon rdf:type brand:Brand .
+brand:Nikon rdf:type brand:Brand .
+brand:Leica rdf:type brand:Brand .
+brand:Zeiss rdf:type brand:Brand .
+
+mounting:RF_Mount rdf:type mounting:MountingType .
+mounting:F_Mount rdf:type mounting:MountingType .
+mounting:Leica_M_Mount rdf:type mounting:MountingType .
+mounting:Z_Mount rdf:type mounting:MountingType .
+mounting:E_Mount rdf:type mounting:MountingType .
+
+camera:Canon_EOS_5D rdf:type camera:DigitalCamera ;
+    :hasBrand brand:Canon ;
+    :hasMountingType mounting:EF_Mount .
+
+camera:Nikon_Z7 rdf:type camera:DigitalCamera ;
+    :hasBrand brand:Nikon ;
+    :hasMountingType mounting:Z_Mount .
+
+camera:Sony_Alpha_A7III rdf:type camera:DigitalCamera ;
+    :hasBrand brand:Sony ;
+    :hasMountingType mounting:E_Mount .
+    
+brand:Sony rdf:type brand:Brand .
