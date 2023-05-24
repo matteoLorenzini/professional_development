@@ -15,14 +15,6 @@ camera:FilmCamera rdf:type owl:Class ;
 camera:CameraLens rdf:type owl:Class .
 brand:Brand rdf:type owl:Class .
 mounting:MountingType rdf:type owl:Class .
-camera:MirrorlessCamera rdf:type owl:Class ;
-rdfs:subClassOf camera:DigitalCamera .
-
-camera:DSLR rdf:type owl:Class ;
-rdfs:subClassOf camera:DigitalCamera .
-
-brand:ThirdPartyBrand rdf:type owl:Class ;
-rdfs:subClassOf brand:Brand .
 
 # Object Properties
 :hasBrand rdf:type owl:ObjectProperty ;
@@ -49,22 +41,6 @@ rdfs:subClassOf brand:Brand .
     rdfs:range camera:Camera ;
     owl:inverseOf :compatibleLens .
 
-:hasSensorSize rdf:type owl:ObjectProperty ;
-rdfs:domain [ rdf:type owl:Class ;
-owl:unionOf ( camera:DigitalCamera
-camera:FilmCamera
-)
-] ;
-rdfs:range xsd:string .
-
-# Inverse functional properties
-
-:hasBrand rdf:type owl:InverseFunctionalProperty .
-
-# Transitive property axiom
-
-:isCompatibleWith rdf:type owl:TransitiveProperty .
-
 # Restrictions
 camera:DigitalCamera owl:disjointWith camera:FilmCamera .
 
@@ -83,41 +59,6 @@ camera:CameraLens owl:disjointUnionOf ( [
     owl:onClass brand:Brand
   ]
 ) .
-
-camera:DigitalCamera owl:equivalentClass [
-rdf:type owl:Class ;
-owl:intersectionOf ( camera:Camera
-[ rdf:type owl:Restriction ;
-owl:onProperty :hasSensorSize ;
-owl:someValuesFrom xsd:string
-]
-)
-] .
-
-camera:FilmCamera owl:equivalentClass [
-rdf:type owl:Class ;
-owl:intersectionOf ( camera:Camera
-[ rdf:type owl:Restriction ;
-owl:onProperty :hasSensorSize ;
-owl:cardinality "0"
-]
-)
-] .
-
-camera:CameraLens owl:equivalentClass [
-rdf:type owl:Class ;
-owl:intersectionOf ( camera:CameraLens
-[ rdf:type owl:Restriction ;
-owl:onProperty :hasBrand ;
-owl:someValuesFrom brand:Brand
-]
-)
-] .
-
-#Disjointness axioms
-
-camera:DigitalCamera owl:disjointWith camera:FilmCamera .
-brand:Brand owl:disjointWith brand:ThirdPartyBrand .
 
 # Individual Examples
 camera:Canon_EOS_R6 rdf:type camera:DigitalCamera ;
@@ -171,43 +112,3 @@ camera:Sony_Alpha_A7III rdf:type camera:DigitalCamera ;
     :hasMountingType mounting:E_Mount .
     
 brand:Sony rdf:type brand:Brand .
-
-camera:Sony_A7III rdf:type camera:MirrorlessCamera ;
-    :hasBrand brand:Sony ;
-    :hasMountingType mounting:E_Mount ;
-    :hasSensorSize "Full Frame"^^xsd:string .
-
-camera:Canon_5D_Mark_IV rdf:type camera:DSLR ;
-    :hasBrand brand:Canon ;
-    :hasMountingType mounting:EF_Mount ;
-    :hasSensorSize "Full Frame"^^xsd:string .
-
-brand:Sigma rdf:type brand:ThirdPartyBrand .
-
-camera:Sigma_35mm_f_1.4 rdf:type camera:CameraLens ;
-    :hasBrand brand:Sigma ;
-    :hasMountingType mounting:EF_Mount ;
-    :isCompatibleWith camera:Canon_5D_Mark_IV .
-
-camera:Sigma_85mm_f_1.4 rdf:type camera:CameraLens ;
-    :hasBrand brand:Sigma ;
-    :hasMountingType mounting:E_Mount ;
-    :isCompatibleWith camera:Sony_A7III .
-
-mounting:L_Mount rdf:type mounting:MountingType .
-
-camera:Panasonic_S1 rdf:type camera:MirrorlessCamera ;
-    :hasBrand brand:Panasonic ;
-    :hasMountingType mounting:L_Mount ;
-    :hasSensorSize "Full Frame"^^xsd:string .
-
-brand:Panasonic rdf:type brand:Brand .
-
-camera:Canon_EOS_1V rdf:type camera:FilmCamera ;
-    :hasBrand brand:Canon .
-
-camera:Nikon_F6 rdf:type camera:FilmCamera ;
-    :hasBrand brand:Nikon .
-
-camera:Leica_M7 rdf:type camera:FilmCamera ;
-    :hasBrand brand:Leica .
